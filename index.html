@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrievanceLink | Student Support Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4da3ff;
+            --primary-glow: rgba(77, 163, 255, 0.3);
+            --secondary: #102a54;
+            --bg-dark: #0a1321;
+            --bg-card: #162235;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(10, 26, 51, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex; gap: 2rem; align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        .btn-admin {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-admin:hover { background: var(--primary); color: var(--bg-dark); }
+
+        /* Layout Sections */
+        .page {
+            display: none;
+            padding: 2rem 5%;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 6rem 1rem;
+            background: radial-gradient(circle at center, #1e3a8a33 0%, transparent 70%);
+            position: relative;
+        }
+
+        .hero h2 { 
+            font-size: 3.5rem; 
+            margin-bottom: 1.5rem; 
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p { color: var(--text-muted); max-width: 600px; margin: 0 auto 2.5rem; font-size: 1.1rem; }
+
+        /* Info Section */
+        .info-section { padding: 2rem 0 4rem; max-width: 1300px; margin: 0 auto; }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--primary);
+            display: inline-block;
+        }
+
+        .info-grid {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+
+        .info-card {
+            background: var(--white);
+            color: var(--bg-dark);
+            padding: 2rem 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 15px 30px var(--primary-glow);
+        }
+
+        .info-card p { font-size: 0.95rem; color: #475569; line-height: 1.5; transition: color 0.3s; }
+        .info-card:hover p { color: rgba(255, 255, 255, 0.9); }
+
+        /* Admin Table Styles (Organized) */
+        .admin-table-wrapper {
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-light);
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.2rem 1rem;
+            text-align: left;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        td {
+            padding: 1.2rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+        /* Action elements inside table */
+        .admin-table-wrapper select {
+            background: var(--bg-dark);
+            color: var(--text-light);
+            border: 1px solid #334155;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .status-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+        .status-inprogress { background: rgba(77, 163, 255, 0.15); color: var(--primary); border: 1px solid var(--primary); }
+        .status-resolved { background: rgba(34, 197, 94, 0.15); color: var(--success); border: 1px solid var(--success); }
+
+        /* Form Styling */
+        .form-container {
+            max-width: 750px; margin: 0 auto; background: var(--bg-card); padding: 2.5rem;
+            border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        input, select, textarea {
+            width: 100%; padding: 0.8rem 1rem; background: #0f172a; border: 1px solid #334155;
+            border-radius: 8px; color: white; outline: none; transition: 0.3s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
+
+        button.btn-submit {
+            width: 100%; padding: 1rem; background: var(--primary); color: var(--bg-dark);
+            border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+
+        #toast {
+            position: fixed; bottom: 20px; right: 20px; padding: 1rem 2rem; border-radius: 8px;
+            background: var(--primary); color: var(--bg-dark); font-weight: 600;
+            transform: translateY(100px); transition: transform 0.3s; z-index: 2000;
+        }
+
+        footer { margin-top: 5rem; padding: 3rem 5%; text-align: center; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+
+        @media (max-width: 992px) { .info-grid { flex-wrap: wrap; } .info-card { flex: 1 1 calc(50% - 20px); } }
+        @media (max-width: 600px) { .info-card { flex: 1 1 100%; } .hero h2 { font-size: 2.2rem; } .admin-table-wrapper { overflow-x: auto; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo" onclick="showPage('home')">GrievanceLink</div>
+        <div class="nav-links">
+            <a onclick="showPage('submit')">Submit Complaint</a>
+            <a onclick="showPage('track')">Track Status</a>
+            <a onclick="checkAdminAuth()" class="btn-admin">Admin Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <div class="hero">
+            <h2>Your Voice Matters</h2>
+            <p>Official portal for student grievance redressal. Submit your concerns safely and track them in real-time.</p>
+            <div style="display: flex; gap: 15px; justify-content: center; max-width: 500px; margin: 0 auto;">
+                <button class="btn-submit" onclick="showPage('submit')">Submit New Grievance</button>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2 class="section-title">Types of Grievances</h2>
+            <div class="info-grid">
+                <div class="info-card"><h3>Harassment</h3><p>Report harassment, bullying, or any form of misconduct safely and anonymously.</p></div>
+                <div class="info-card"><h3>Academic</h3><p>Issues related to exams, results, teaching quality, or laboratory requirements.</p></div>
+                <div class="info-card"><h3>Facilities</h3><p>Report campus infrastructure issues, hostel problems, or technical failures.</p></div>
+                <div class="info-card"><h3>Administrative</h3><p>Problems regarding fees, documentation, scholarships, or office processing.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUBMIT PAGE -->
+    <div id="submit" class="page">
+        <div class="form-container" id="submitFormWrapper">
+            <h2 style="margin-bottom: 1.5rem">Submit a Grievance</h2>
+            <form id="grievanceForm">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 1.2rem;">
+                    <div><label>Full Name</label><input type="text" id="fullname" placeholder="Enter your full name" required></div>
+                    <div><label>Email Address</label><input type="email" id="email" placeholder="example@college.edu" required></div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 1.2rem;">
+                    <div><label>Department</label><select id="dept"><option>IT</option><option>CS</option><option>ENTC</option><option>Electrical</option><option>AIDS</option></select></div>
+                    <div><label>Category</label><select id="cat"><option>Academic Problem</option><option>Exam Related</option><option>Infrastructure</option><option>Administration</option><option>Harassment</option><option>Other</option></select></div>
+                </div>
+                <div style="margin-bottom: 1.2rem;"><label>Detailed Description</label><textarea id="desc" rows="5" placeholder="Explain your grievance in detail..." required></textarea></div>
+                <button type="submit" class="btn-submit">Submit Formal Complaint</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TRACK PAGE -->
+    <div id="track" class="page">
+        <div style="max-width: 400px; margin: 4rem auto; background: var(--bg-card); padding: 2.5rem; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+            <h2>Track Status</h2>
+            <input type="text" id="trackId" placeholder="Enter tracking ID (GRV-XXXXXX)" style="margin: 1.5rem 0; text-align: center;">
+            <button class="btn-submit" onclick="trackComplaint()">Check Status</button>
+            <div id="trackResult" style="margin-top: 2rem"></div>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN -->
+    <div id="adminLogin" class="page">
+        <div style="max-width: 400px; margin: 4rem auto; background: var(--bg-card); padding: 2.5rem; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+            <h2>Admin Access</h2>
+            <div style="margin: 1rem 0;"><input type="email" id="authEmail" placeholder="Admin Email"></div>
+            <div style="margin: 1rem 0;"><input type="password" id="authPass" placeholder="Password"></div>
+            <button class="btn-submit" onclick="performLogin()">Login</button>
+            <p id="authError" style="color: var(--danger); font-size: 0.8rem; margin-top: 1rem; display: none;">Invalid credentials.</p>
+        </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD (Organized Table) -->
+    <div id="admin" class="page">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 2rem">
+            <div>
+                <h2 style="font-size: 2rem;">Management Dashboard</h2>
+                <p style="color: var(--text-muted);">Overview of all student complaints</p>
+            </div>
+            <button onclick="adminLogout()" style="color:var(--danger); background:rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); padding: 0.5rem 1.2rem; border-radius: 8px; cursor:pointer; font-weight:bold;">Logout</button>
+        </div>
+
+        <div class="admin-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Grievance ID</th>
+                        <th>Student Name</th>
+                        <th>Dept / Category</th>
+                        <th>Submitted On</th>
+                        <th>Status</th>
+                        <th>Manage Action</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTbody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="toast">Message here</div>
+
+    <footer>
+        <p>&copy; 2025 GrievanceLink - Secure Student Redressal System</p>
+    </footer>
+
+    <script>
+        const ADMIN_USER = "dipendrakarki3109@gmail.com";
+        const ADMIN_PASS = "123456";
+        let isAdminAuthenticated = false;
+        let complaints = JSON.parse(localStorage.getItem('grievance_data') || '[]');
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if(pageId === 'admin') renderAdminTable();
+        }
+
+        function checkAdminAuth() { isAdminAuthenticated ? showPage('admin') : showPage('adminLogin'); }
+
+        function performLogin() {
+            if (document.getElementById('authEmail').value === ADMIN_USER && document.getElementById('authPass').value === ADMIN_PASS) {
+                isAdminAuthenticated = true;
+                showPage('admin');
+                showToast("Welcome Admin");
+            } else {
+                document.getElementById('authError').style.display = 'block';
+            }
+        }
+
+        function adminLogout() { isAdminAuthenticated = false; showPage('home'); }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.transform = 'translateY(0)';
+            setTimeout(() => toast.style.transform = 'translateY(150px)', 3000);
+        }
+
+        document.getElementById('grievanceForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = 'GRV-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            const data = {
+                id,
+                name: document.getElementById('fullname').value,
+                email: document.getElementById('email').value,
+                dept: document.getElementById('dept').value,
+                cat: document.getElementById('cat').value,
+                desc: document.getElementById('desc').value,
+                status: 'Pending',
+                date: new Date().toLocaleString()
+            };
+            complaints.push(data);
+            localStorage.setItem('grievance_data', JSON.stringify(complaints));
+            
+            document.getElementById('submitFormWrapper').innerHTML = `
+                <div style="background:#0f172a; padding:2.5rem; border-radius:12px; text-align:center; border:1px solid var(--success);">
+                    <h2 style="color:var(--success)">Grievance Submitted!</h2>
+                    <p style="color:var(--text-muted); margin:1rem 0;">ID: <b>${id}</b></p>
+                    <button class="btn-submit" onclick="location.reload()">Back to Home</button>
+                </div>`;
+            showToast("Submitted Successfully");
+        });
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminTbody');
+            if (complaints.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 3rem; color: var(--text-muted);">No complaints found.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = complaints.slice().reverse().map((c) => {
+                const actualIdx = complaints.findIndex(item => item.id === c.id);
+                const statusClass = c.status.toLowerCase().replace(/\s/g, '');
+                return `
+                <tr>
+                    <td style="font-family: monospace; font-weight: bold; color: var(--primary);">${c.id}</td>
+                    <td>${c.name}</td>
+                    <td>${c.dept} / ${c.cat}</td>
+                    <td style="color: var(--text-muted); font-size: 0.8rem;">${c.date}</td>
+                    <td><span class="status-badge status-${statusClass}">${c.status}</span></td>
+                    <td>
+                        <select onchange="updateStatus(${actualIdx}, this.value)">
+                            <option ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                            <option ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                        </select>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateStatus(idx, val) {
+            complaints[idx].status = val;
+            localStorage.setItem('grievance_data', JSON.stringify(complaints));
+            showToast("Status Updated");
+            renderAdminTable();
+        }
+
+        function trackComplaint() {
+            const id = document.getElementById('trackId').value.trim().toUpperCase();
+            const item = complaints.find(c => c.id === id);
+            const res = document.getElementById('trackResult');
+            if (!item) { res.innerHTML = `<p style="color:var(--danger)">ID Not Found</p>`; return; }
+            res.innerHTML = `
+                <div style="background:var(--bg-dark); padding:1.5rem; border-radius:12px; border: 1px solid var(--primary); text-align:left;">
+                    <p><b>Status:</b> <span class="status-badge status-${item.status.toLowerCase().replace(/\s/g, '')}">${item.status}</span></p>
+                    <p style="margin-top: 10px;"><b>Date:</b> ${item.date}</p>
+                    <p style="font-size:0.85rem; margin-top:12px; color: var(--text-muted);">"${item.desc}"</p>
+                </div>`;
+        }
+    </script>
+</body>
+</html>
